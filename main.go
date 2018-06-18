@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"os"
 	"time"
-	"net/http"
+
 	"github.com/gorilla/websocket"
 	"github.com/kbinani/screenshot"
 )
@@ -17,7 +17,7 @@ var display int
 var addr string
 
 func init() {
-	flag.StringVar(&addr, "addr", "13.232.17.3:8080", "server address")
+	flag.StringVar(&addr, "addr", "localhost:8080", "server address")
 	flag.IntVar(&display, "display", 0, "number of the display to stream")
 }
 
@@ -26,16 +26,16 @@ func main() {
 	//taking path as parameter
 	pathAsArg := os.Args[1]
 	//log.Printf(pathAsArg)
-	_, err := http.Get("http://13.232.17.3:8080/path/?servingPath="+pathAsArg)
-    if err != nil {
-        log.Printf("The HTTP request failed with error %s\n", err)
-    } else {
+	/*_, err := http.Get("http://vps.seemyscreen.com.au:8080/path/?servingPath=" + pathAsArg)
+	if err != nil {
+		log.Printf("The HTTP request failed with error %s\n", err)
+	} else {*/
 
 		flag.Parse()
 		interrupt := make(chan os.Signal, 1)
 		//signal.Notify(interrupt, os.Interrupt)
 
-		u := url.URL{Scheme: "ws", Host: addr, Path: "/source"}
+		u := url.URL{Scheme: "ws", Host: addr, Path: "/source/"+pathAsArg}
 		log.Printf("connecting to %s", u.String())
 
 		c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
@@ -50,7 +50,7 @@ func main() {
 		}
 
 		sendPngBytes(c, display, interrupt)
-	}
+	//}
 }
 
 func sendPngBytes(conn *websocket.Conn, displayCount int, interrupt chan os.Signal) {
