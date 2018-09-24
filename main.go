@@ -20,16 +20,16 @@ var quality int
 var fps int
 
 func init() {
-	flag.StringVar(&addr, "addr", "vps.seemyscreen.com.au:8081", "server address")
+	flag.StringVar(&addr, "addr", "localhost:8081", "server address")
 	flag.IntVar(&display, "display", 0, "number of the display to stream")
 }
 
 func main() {
 	//hitting the api for setting path
 	//taking path as parameter
-	pathAsArg := os.Args[1]
-	quality,_ = strconv.Atoi(os.Args[2])
-	fps,_ = strconv.Atoi(os.Args[3])
+	pathAsArg := os.Args[3]
+	quality,_ = strconv.Atoi(os.Args[4])
+	fps,_ = strconv.Atoi(os.Args[5])
 	//log.Printf(pathAsArg)
 	/*_, err := http.Get("http://vps.seemyscreen.com.au:8080/path/?servingPath=" + pathAsArg)
 	if err != nil {
@@ -45,7 +45,7 @@ func main() {
 
 		c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 		if err != nil {
-			log.Fatal("dial:", err)
+			log.Fatal("Error Occured: dial:", err)
 		}
 		defer c.Close()
 
@@ -80,7 +80,7 @@ func sendPngBytes(conn *websocket.Conn, displayCount int, interrupt chan os.Sign
 			err = conn.WriteMessage(websocket.BinaryMessage, bytesToSend)
 			log.Println("Done sending  stream.")
 			if err != nil {
-				log.Println("write:", err)
+				log.Println("Error Occured:", err)
 				return
 			}
 			buf.Reset()
